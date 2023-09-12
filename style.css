@@ -39,12 +39,19 @@ main{
     width: 350px;
     height: 350px;
     grid-template-columns: repeat(3,1fr);
+    grid-template-rows: repeat(3,1fr);
     border: 1px solid black;
 }
 
 .field{
     position: relative;
     border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 90px;
+    cursor: pointer;
+    user-select: none;
 }
 
 .field::before{
@@ -52,6 +59,8 @@ main{
     content: "";
     width: 100%;
     height: 100%;
+    top:0;
+    left:0;
 }
 
 .field:hover::before{
