@@ -1,83 +1,80 @@
 console.log('y');
 
-const Player = (name,input) => {
-    const selectionArray = ['', '', '', '', '', '', '', '', ''];
-    return {name,input,selectionArray};
-}
-
-const gameController = (function(){
-    //Object Properties
-    const user = Player('user','X');
-    const cpu = Player('cpu','Y');
-
-    function addMarkToPlayer(input,index){
-        if(input == 'X'){
-            user.selectionArray[index] = input;
-        }
-        if(input == 'O'){
-            cpu.selectionArray[index] = input;
-        }
-    }
-        
-
-    return {addMarkToPlayer,user,cpu};
-})();
-
+const Player = (sign) => {
+  
+    const getSign = () => {
+      return sign;
+    };
+  
+    return { getSign };
+};
+  
 const gameBoard = (function () {
     //Object properties
-    const gameBoardArr = ['', '', '', '', '', '', '', '', ''];
-    let currentPlayer = 'X';
-    //cache DOM
-    const grids = document.querySelectorAll('.field');
-    const playerTurn = document.getElementById('player-turn');
-
-    //bind EVENTS
-    grids.forEach(grid => grid.addEventListener('click', (e) => {
-        addMark(grid.getAttribute('data-index'),currentPlayer);
-        renderBoard();
-        renderPlayerTurn();
-    }));
-
+    const arr = ['', '', '', '', '', '', '', '', ''];
     //functions
-    function renderBoard(){
-        grids.forEach((grid,index) => grid.textContent = gameBoardArr[index]);
-    }
+    function drawMark(field,mark){arr[field-1] = mark;};
 
-    function renderPlayerTurn(){
-        playerTurn.textContent = `Player ${currentPlayer} Turn`;
-    }
+    function getMark(field){return arr[field];}
 
-    function addMark(field,currentPlayer){
-        if(checkFieldAvailability(field)){
-            console.log(`field available`);
-            gameBoardArr[field - 1] = currentPlayer;
-            gameController.addMarkToPlayer(currentPlayer,field);
-            switchcurrentPlayer();
-        }else{
-            console.log(`field not available`);
-        }
-    }
-
-    function checkFieldAvailability(field){
-        if(gameBoardArr[field - 1] == ''){
+    function isFieldAvailable(field){
+        if(arr[field - 1] == ''){
             return true;
         }else{
             return false;
         }
-        
     }
 
     function reset(){
-        for(let i = 0; i < gameBoardArr.length;i++){
-            gameBoardArr[i] = '';
+        for(let i = 0; i < arr.length;i++){
+            arr[i] = '';
         }
+    }
+
+    return {drawMark,getMark,isFieldAvailable,reset};
+})();
+
+const gameController = (function(){
+    //Object Properties
+    const playerX = Player('X');
+    const playerO = Player('O');
+    let round = 1;
+    let isOver = false;
+
+    function playRound(markIndex){
+        gameBoard.drawMark(markIndex,getCurrentPlayerSign());
+        round++;
+        displayController.renderMessage(getCurrentPlayerSign());
+    }
+
+    function getCurrentPlayerSign(){
+        return round % 2 == 0 ? playerO.getSign() : playerX.getSign();
+    }
+
+    return {playRound};
+})();
+
+const displayController = (function(){
+    //cache DOM
+    const grids = document.querySelectorAll('.field');
+    const turnMessage = document.getElementById('player-turn');
+    const resetButton = document.querySelector('#reset-button');
+
+    //bind events
+    grids.forEach(grid => grid.addEventListener('click', (e) => {
+        gameController.playRound(grid.getAttribute('data-index'));
         renderBoard();
+    }));
+
+    //functions
+    function renderBoard(){
+        grids.forEach((grid,index) => {grid.textContent = gameBoard.getMark(index)});
     }
 
-    function switchcurrentPlayer(){
-        (currentPlayer == 'O' ? currentPlayer = 'X' : currentPlayer = 'O');
+    function renderMessage(currentPlayer){
+        turnMessage.textContent = `Player ${currentPlayer} Turn`;
     }
 
-    return {gameBoardArr};
+    return{renderBoard,renderMessage};
 })();
 
