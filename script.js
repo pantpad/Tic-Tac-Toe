@@ -51,7 +51,13 @@ const gameController = (function(){
         return round % 2 == 0 ? playerO.getSign() : playerX.getSign();
     }
 
-    return {playRound};
+    function reset(){
+        round = 1;
+        isOver = false;
+        displayController.renderMessage(getCurrentPlayerSign());
+    }
+
+    return {playRound,reset};
 })();
 
 const displayController = (function(){
@@ -62,9 +68,12 @@ const displayController = (function(){
 
     //bind events
     grids.forEach(grid => grid.addEventListener('click', (e) => {
+        if(!gameBoard.isFieldAvailable(grid.getAttribute('data-index'))) return;
         gameController.playRound(grid.getAttribute('data-index'));
         renderBoard();
     }));
+
+    resetButton.addEventListener('click',(e) => resetGame());
 
     //functions
     function renderBoard(){
@@ -75,6 +84,12 @@ const displayController = (function(){
         turnMessage.textContent = `Player ${currentPlayer} Turn`;
     }
 
-    return{renderBoard,renderMessage};
+    function resetGame(){
+        gameBoard.reset();
+        gameController.reset();
+        renderBoard();
+    }
+
+    return{renderMessage};
 })();
 
