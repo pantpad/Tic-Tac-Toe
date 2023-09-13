@@ -81,7 +81,7 @@ const gameController = (function(){
     function reset(){
         round = 1;
         isOver = false;
-        displayController.renderMessage(getCurrentPlayerSign());
+        displayController.renderMessage(`Player ${getCurrentPlayerSign()} Turn`);
     }
 
     return {playRound,isGameOver,reset};

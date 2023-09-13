@@ -2,6 +2,12 @@
 
 :root{
     font-family: 'Roboto', sans-serif;
+    --background-color: #CEE7E6;
+    --grid-color: #BFC0C0;
+    --header-color: #648767;
+    --header-text-color: #4c5c68;
+    --text-color: #7DC95E;
+    --button-color: #7CDF64;
 }
 
 *{
@@ -17,7 +23,7 @@ html{
 }
 
 body{
-    background-color: rgba(0, 0, 255, 0.1);
+    background-color: var(--background-color);
 }
 
 header{
@@ -26,12 +32,13 @@ header{
     align-items: center;
     height: 150px;
     background-color: aquamarine;
-    border-bottom: 2px solid brown;
+    border-bottom: 2px solid var(--header-text-color);
 }
 
 header h1{
     font-size: 5em;
     font-weight: 300;
+    color: #4c5c68;
 }
 
 main{
@@ -41,6 +48,7 @@ main{
     flex-direction: column;
     gap: 1em;
     padding: 1em;
+    color: var(--header-text-color);
 }
 
 .board-container{
@@ -49,12 +57,12 @@ main{
     height: 350px;
     grid-template-columns: repeat(3,1fr);
     grid-template-rows: repeat(3,1fr);
-    border: 1px solid black;
+    border: 1px solid var(--header-text-color);
 }
 
 .field{
     position: relative;
-    border: 1px solid black;
+    border: 1px solid var(--header-text-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -78,17 +86,18 @@ main{
 
 button{
     padding: 1em 2em;
-    background-color: aquamarine;
-    font-size: 1.55em;
+    background-color: var(--button-color);
+    font-size: 1.35em;
     font-weight: bold;
-    border: 1px solid brown;
+    border: 1px solid var(--text-color);
     cursor: pointer;
     margin-bottom: 3em;
+    color: var(--header-text-color);
 }
 
 footer{
     position: absolute;
-    background-color: antiquewhite;
+    background-color: var(--background-color);
     width: 100%;
     display: flex;
     justify-content: center;
