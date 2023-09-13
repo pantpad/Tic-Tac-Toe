@@ -41,23 +41,50 @@ const gameController = (function(){
     let round = 1;
     let isOver = false;
 
+    const winningCombination = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6]];
+
     function playRound(markIndex){
         gameBoard.drawMark(markIndex,getCurrentPlayerSign());
-        round++;
-        displayController.renderMessage(getCurrentPlayerSign());
+        if(hasCurrentPlayerWon()){
+            isOver = true;
+            displayController.renderMessage(`Player ${getCurrentPlayerSign()} HAS WON`);
+        }else{
+            if(round == 9){
+                isOver = true;
+                displayController.renderMessage(`It's a DRAW!`);
+            }else{
+            round++;
+            displayController.renderMessage(`Player ${getCurrentPlayerSign()} Turn`);
+            }
+        }
     }
 
     function getCurrentPlayerSign(){
         return round % 2 == 0 ? playerO.getSign() : playerX.getSign();
     }
 
+    function hasCurrentPlayerWon(){
+        return winningCombination.some(combination => combination.every(winningIndex => gameBoard.getMark(winningIndex) == getCurrentPlayerSign()));
+    }
+
+    function isGameOver(){
+        return isOver;
+    }
     function reset(){
         round = 1;
         isOver = false;
         displayController.renderMessage(getCurrentPlayerSign());
     }
 
-    return {playRound,reset};
+    return {playRound,isGameOver,reset};
 })();
 
 const displayController = (function(){
@@ -68,7 +95,7 @@ const displayController = (function(){
 
     //bind events
     grids.forEach(grid => grid.addEventListener('click', (e) => {
-        if(!gameBoard.isFieldAvailable(grid.getAttribute('data-index'))) return;
+        if(gameController.isGameOver() || !gameBoard.isFieldAvailable(grid.getAttribute('data-index'))) return;
         gameController.playRound(grid.getAttribute('data-index'));
         renderBoard();
     }));
@@ -80,8 +107,8 @@ const displayController = (function(){
         grids.forEach((grid,index) => {grid.textContent = gameBoard.getMark(index)});
     }
 
-    function renderMessage(currentPlayer){
-        turnMessage.textContent = `Player ${currentPlayer} Turn`;
+    function renderMessage(message){
+        turnMessage.textContent = message;
     }
 
     function resetGame(){
